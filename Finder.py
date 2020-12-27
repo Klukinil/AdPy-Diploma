@@ -8,8 +8,8 @@ import time
 from BD import User, Partners, Photo, session
 
 
-token = 'dcde12a55eb7abc41214541e825dc10c7465dfdc6391a04e12ae426d99644d21eea60acec68ad87f1d28c'
-token_search = '2c2b3d1bd1b08d25218e2f9afc0807cc4a7abe610d671954a42b0eccd0614e9b1e1b0f422a97e2e6eb74d'
+token = ' '
+token_search = ' '
 vk = vk_api.VkApi(token=token)
 longpoll = VkLongPoll(vk)
 headers = {'Content-type': 'application/json', 'Accept': 'text/plain', 'Content-Encoding': 'utf-8'}
@@ -76,7 +76,6 @@ class Friend_Finder():
                                         headers=headers).json()['response']['items']
                     self.about_user['city'] = city
                     break
-
         # self.write_msg(id, 'Отлично, вся необходимая информация получена')
         # print(self.about_user)
         return self.about_user
@@ -98,6 +97,7 @@ class Friend_Finder():
                     break
         # print(self.age_range)
         return self.age_range
+
 
     def  prefered_sex_choose(self, id):
         self.write_msg(id, "Введи пол парнтера: 1 - ж, 2 - м")
@@ -140,7 +140,6 @@ class Friend_Finder():
 
             like_count_sorted = sorted(like_count, reverse=True)
             most_likes = like_count_sorted[0:3]
-
             for photo in photo_list:
                 if photo['likes']['count'] in most_likes:
                     self.best_photo.append([photo['id'], photo['likes']['count'], photo['sizes'][-1]['url']])
@@ -158,6 +157,7 @@ class Friend_Finder():
         response = requests.get(f'https://api.vk.com/method/messages.send',
                                 params=photo_param, headers=headers).json()
         return response
+
 
     def friend_or_not(self, main_user, vk_user):
         bot.write_msg(main_user, "Понравился ли тебе кандидат? Напиши да или нет")
@@ -199,6 +199,7 @@ class Friend_Finder():
         # print(self.best_partner)
         return self.best_partner
 
+
     def best_partner_age(self):
         best_partner_info = self.user_info(self.best_partner[0])
         self.best_partner_age = best_partner_info['age']
@@ -211,11 +212,13 @@ class Friend_Finder():
         session.commit()
         return table_user
 
+
     def save_partner(self, client_id):
         table_datinguser = Partners(self.best_partner[0], self.best_partner[2], self.best_partner[1], self.best_partner_age, client_id)
         session.add(table_datinguser)
         session.commit()
         return table_datinguser
+
 
     def photo_save(self):
         best_photo = self.choose_3photo(self.best_partner[0])
@@ -224,6 +227,7 @@ class Friend_Finder():
             session.add(table_Photos)
         session.commit()
         return "Фотография занесена в базу данных"
+
 
 if __name__ == '__main__':
     for event in longpoll.listen():
